@@ -1,12 +1,12 @@
 const puppeteer = require('puppeteer');
 const { launch } = require('puppeteer');
 
-const getAllPostUrls = async () => {
-	const browser = await puppeteer.launch({ headless: false });
+const getAllPostUrls = async (userName) => {
+	const browser = await puppeteer.launch({ headless: true });
 	const page = await browser.newPage();
 
 	await page.setViewport({ width: 1920, height: 1080 });
-	await page.goto('https://www.instagram.com/finkonsul/');
+	await page.goto(`https://www.instagram.com/${userName}/`);
 	// await page.hover('#react-root > section > main > div > div._2z6nI > article > div:nth-child(1) > div > div:nth-child(1) > div:nth-child(1)');
 	await page.addScriptTag({ path: require.resolve('jquery') });
 
@@ -19,7 +19,6 @@ const getAllPostUrls = async () => {
 			elements = "https://www.instagram.com" + elem.getAttribute('href');
 			return elements;
 		});
-
 		return { subscribers, urls };
 	});
 	browser.close();
@@ -27,7 +26,7 @@ const getAllPostUrls = async () => {
 };
 
 const getAllDataFromPost = async (url) => {
-	const browser = await puppeteer.launch({ headless: false });
+	const browser = await puppeteer.launch({ headless: true });
 	const page = await browser.newPage();
 	var data = [];
 
@@ -61,17 +60,19 @@ const getAllDataFromPost = async (url) => {
 	return data;
 };
 
-(async () => {
+ var resultFunc = async (instaUrl) => {
 
-	const data = await getAllPostUrls();
+	const data = await getAllPostUrls(instaUrl);
 	const result = { data, posts: [] };
 	for (url of data.urls) {
 		result.posts.push(await getAllDataFromPost(url));
 	};
 
-	var myJSON = JSON.stringify(result, null, 2);
-	console.log('qqqqqqqq', myJSON);
-	return myJSON;
-})();
+	// var myJSON = JSON.stringify(result, null, 2);
+	// console.log('qqqqqqqq', myJSON);
+	return result;
+};
+
+module.exports = resultFunc;
 
 // getAllPostUrls().then(urls => urls.map(url => getAllDataFromPost(url).then(data => console.log(data)))
