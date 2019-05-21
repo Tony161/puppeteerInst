@@ -1,0 +1,17 @@
+const express = require('express');
+const companiesAndVacansies = require('./indeed.js');
+const port = process.env.PORT || 3001;
+
+var app = express();
+
+app.get('/', (req, res) => {
+  res.send("введите параметры поиска: http://localhost:3001/jobtitle/netsuite/location/usa/days/1 ");
+})
+
+app.get('/jobtitle/:jobtitle/location/:location/days/:daysToSearch', async (req, res) => {
+  res.json(await companiesAndVacansies(req.params.jobtitle, req.params.location, req.params.daysToSearch));
+})
+
+app.listen(port, () => {
+  console.log(`Server listening on port ${port}!`);
+})
