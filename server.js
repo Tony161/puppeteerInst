@@ -1,5 +1,5 @@
 const express = require('express');
-const companiesAndVacansies = require('./in.js');
+const companiesAndVacansies = require('./indeed.js');
 const port = process.env.PORT || 3001;
 
 var app = express();
